@@ -43,7 +43,11 @@ def main_process(start_url, connection):
 
 	while len(url_list) != 0:
 
-		url_list.extend(extract_urls(url_list[0],connection,url_list,complete_list))
+		try:
+			url_list.extend(extract_urls(url_list[0],connection,url_list,complete_list))
+		except UnicodeEncodeError:
+			print "There was a problem with", url_list[0]
+
 		complete_list.append(url_list[0])
 		print url_list.pop(0)
 
