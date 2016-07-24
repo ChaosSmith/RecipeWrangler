@@ -23,25 +23,33 @@ def extract_recipe(url,connection):
 
 	return [this_title,ingredient_list]
 
+def get_all_recipes(url_list,connection):
+	ingredient_list = []
+	title_list = []
+	source = []
+
+	for url in url_list:
+
+		print "Hitting url: ", url, " ....."
+		try:
+			recipe = extract_recipe(url,http)
+			print "Title: ", recipe[0]
+			print "Ingredients: ", recipe[1]
+			title_list.append(recipe[0])
+			ingredient_list.append(recipe[1])
+			source.append(url)
+
+		except UnboundLocalError:
+			print "Nothing to hit, moving on"
+
+	cookbook = {}
+	for i in range(len(title_list)):
+		cookbook.add({title[i]: {'source' : source[i], 'ingredients' : ingredient_list[i]}})
+
+	pickle.dump(cookbook,open("cookbook.p","wb"))
+
 http = httplib2.Http()
 
 url_list = pickle.load(open("updated_list.p","rb"))
 
-ingredient_list = []
-title_list = []
-source = []
-
-for url in url_list:
-
-	print "Hitting url: ", url, " ....."
-	try:
-		recipe = extract_recipe(url,http)
-		print "Title: ", recipe[0]
-		print "Ingredients: ", recipe[1]
-		title_list.append(recipe[0])
-		ingredient_list.append(recipe[1])
-		source.append(url)
-
-	except UnboundLocalError:
-		print "Nothing to hit, moving on"
-
+get_all_recipes(url_list,http)
